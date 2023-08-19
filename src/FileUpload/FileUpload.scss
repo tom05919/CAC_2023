@@ -1,0 +1,42 @@
+.upload-card {
+    background-color: whitesmoke;
+    border: 3px dashed whitesmoke;
+    min-width: 400px;
+    min-height: 250px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+
+    .upload-inputs {
+        position: relative;
+        padding: 0.8rem;
+        
+        input {
+            position: relative;
+            max-width: 250px;
+            height: 50px;
+            z-index: 2;
+            opacity: 0;
+        }
+
+        button {
+            z-index: 1;
+            height: 100%;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            top: 0px;
+            left: 0px
+        }
+
+        &:hover {
+            button {
+                background-color: #242424;
+            }
+        }
+    }
+}
