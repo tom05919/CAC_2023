@@ -48,7 +48,7 @@ function App() {
       headers: {
         'content-type': 'application/json',
         'Content-Type': 'application/json',
-        'X-RapidAPI-Key': '9133386cf9msh24b0ee9eea003c6p12addejsn8086f047f132',
+        'X-RapidAPI-Key': import.meta.env.VITE_API_KEY_AI,
         'X-RapidAPI-Host': 'ai-content-detector-ai-gpt.p.rapidapi.com'
       },
       data: {
