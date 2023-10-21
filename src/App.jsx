@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import axios from "axios";
 import './App.scss'
 
@@ -8,20 +8,53 @@ function App() {
   const [text, setText] = useState("");
   const [realOne, setRealOne] = useState();
   const [fakeOne, setFakeOne] = useState();
-  const [realTwo, setRealTwo] = useState();
-  const [fakeTwo, setFakeTwo] = useState();
-  var fakeAvg;
+  const [fakeTwo, setFakeTwo] = useState(0);
+  const [textareaValue, setTextareaValue] = useState();
+  const [resultText, setResultText] = useState("");
+  const [AISentence, setAISentence] = useState([])
 
+  //detects change in text, and thus updating textareaValue
+  useEffect(() => {
+    const temp = text.replace('\n', ' ');
+    setText(temp);
+    //console.log(text)
+    const newValue = text;
+    //console.log(newValue + "12345678");
+    setTextareaValue(newValue);
+    //console.log(textareaValue + "123456789");
+  }, [text]);
+
+  //makes an image preview of what the user uploaded
   function handleFileInputChange(event) {
     setImageFile(event.target.files[0]);
     setPreviewImage(URL.createObjectURL(event.target.files[0]));
   }
 
+  //changes the textareaValue when the user changes the stuff in textarea
   function onTextChange (event) {
-    setText(event.target.value);
-    console.log(event.target.value);
+    setTextareaValue(event.target.value);
+    //console.log(event.target.value);
   }
 
+  function makeNewText() {
+    let newString = "";
+    let lastIndex = 0;
+    for (let i = 0; i < AISentence.length; i++) {
+      let index = textareaValue.indexOf(AISentence[i]);
+      lastIndex = index + AISentence[i].length;
+      if (i == 0) {
+        newString = newString.concat(textareaValue.substring(0, index));
+        newString = newString.concat(AISentence[i].fontcolor('red')); 
+      } else {
+        newString = newString.concat(textareaValue.substring(lastIndex, index));
+        newString = newString.concat(AISentence[i].fontcolor('red'));
+      }
+    }
+    document.getElementById('result').innerHTML = newString
+    setResultText(newString);
+  }
+
+  //calls the hnadwriting to text api
   function handleFormSubmit(event) {
     event.preventDefault();
     const form = new FormData();
@@ -49,6 +82,7 @@ function App() {
      console.log(text);
   }
 
+  //calls the zeroGPT api
   function zeroGPT () {
     const options = {
       method: 'POST',
@@ -75,6 +109,7 @@ function App() {
      });
   }
 
+  //calls the AI content detection api
   function AIConDet() {
     const options = {
       method: 'POST',
@@ -82,11 +117,11 @@ function App() {
       headers: {
         'content-type': 'application/json',
         'Content-Type': 'application/json',
-        'X-RapidAPI-Key': '9133386cf9msh24b0ee9eea003c6p12addejsn8086f047f132',
+        'X-RapidAPI-Key': import.meta.env.VITE_API_KEY_AI,
         'X-RapidAPI-Host': 'ai-content-detector-ai-gpt.p.rapidapi.com'
       },
       data: {
-        text: text,
+        text: textareaValue,
       }
     };
 
@@ -94,45 +129,50 @@ function App() {
       .request(options)
       .then(function (response) {
         console.log(response); //fakePercentage
-        setRealTwo(response.data.isHuman);
         setFakeTwo(response.data.fakePercentage);
+        console.log(response.data.aiSentences);
+        setAISentence(response.data.aiSentences);
+        // console.log(AISentence);
+        // makeNewText();
+        // console.log(resultText + "this is the text after the function has been run");
       })
      .catch(function (error) {
        console.error(error);
      });
   }
 
-  function avg() {
-    fakeAvg = (fakeOne + fakeTwo)/2;
-    return fakeAvg;
-  }
-
+  useEffect(() => {
+    console.log(AISentence + "this si AIsentence before the fucntion has been called atline 145")
+    makeNewText();
+    console.log(resultText + "thi is the result test after the function has been called at line 147")
+  }, [AISentence]);
 
   return (
     <>
       <div className="card">
         <p className="title">Upload file</p>
-        <div>
-          <img src={previewImage} />
+        <div className="textareaContainer">
+          <img className="image" src={previewImage} />
           <form onSubmit={handleFormSubmit}>
             <input type="file" onChange={handleFileInputChange}/>
             <input type="submit" value="Extract Text" />
           </form>
           <p className="text">{text}</p>
           <textarea className="textarea"
-            defaultValue={text}
+            value={textareaValue}
             onInput={onTextChange}
           />
         </div>
-        <button onClick={() => {
-          //zeroGPT ();
-          AIConDet();
-          //avg();
-        }}>
+        <button 
+          className="checkAIButton"
+          onClick={() => {
+            AIConDet();
+            //zeroGPT()
+         }}>
           check for AI
         </button>
-        <p>real: {100 - fakeTwo}</p>
-        <p>fake: {fakeTwo}</p>
+        <p className="text">fake: {fakeTwo}%</p>
+        <p className="text" id="result">{resultText}</p>
       </div>
     </>
   )
