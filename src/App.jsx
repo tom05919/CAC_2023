@@ -41,17 +41,16 @@ function App() {
     let lastIndex = 0;
     for (let i = 0; i < AISentence.length; i++) {
       let index = textareaValue.indexOf(AISentence[i]);
-      lastIndex = index + AISentence[i].length;
       if (i == 0) {
         newString = newString.concat(textareaValue.substring(0, index));
-        newString = newString.concat(AISentence[i].fontcolor('red')); 
+        newString = newString.concat("<span style='color:red;'>" + AISentence[i] + "</span>"); 
       } else {
         newString = newString.concat(textareaValue.substring(lastIndex, index));
-        newString = newString.concat(AISentence[i].fontcolor('red'));
+        newString = newString.concat("<span style='color:red;'>" + AISentence[i] + "</span>");
       }
+      lastIndex = index + AISentence[i].length;
     }
-    document.getElementById('result').innerHTML = newString
-    setResultText(newString);
+    document.getElementById('result').innerHTML = "" + newString
   }
 
   //calls the hnadwriting to text api
@@ -133,9 +132,7 @@ function App() {
         setFakeTwo(response.data.fakePercentage);
         console.log(response.data.aiSentences);
         setAISentence(response.data.aiSentences);
-        // console.log(AISentence);
-        // makeNewText();
-        // console.log(resultText + "this is the text after the function has been run");
+
       })
      .catch(function (error) {
        console.error(error);
@@ -143,17 +140,15 @@ function App() {
   }
 
   useEffect(() => {
-    console.log(AISentence + "this si AIsentence before the fucntion has been called atline 145")
     makeNewText();
-    console.log(resultText + "thi is the result test after the function has been called at line 147")
   }, [AISentence]);
 
   return (
     <>
       <div className="card">
-      <label class="switch">
+      <label className="switch">
          <input type="checkbox"/>
-         <span class="slider round"></span>
+         <span className="slider round"></span>
       </label>
         <p className="title">Upload file</p>
         <div className="textareaContainer">
@@ -177,7 +172,7 @@ function App() {
           check for AI
         </button>
         <p className="text">fake: {fakeTwo}%</p>
-        <p className="text" id="result">{resultText}</p>
+        <p className="text" id="result"></p>
       </div>
     </>
   )
