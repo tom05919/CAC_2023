@@ -11,7 +11,7 @@ function App() {
   const [fakeTwo, setFakeTwo] = useState(0);
   const [textareaValue, setTextareaValue] = useState();
   const [resultText, setResultText] = useState("");
-  const [AISentence, setAISentence] = useState([])
+  const [AISentence, setAISentence] = useState([]);
 
   //detects change in text, and thus updating textareaValue
   useEffect(() => {
@@ -69,6 +69,7 @@ function App() {
         "x-rapidapi-key": import.meta.env.VITE_API_KEY_PEN,
       },
       data: form,
+      
     };
 
     axios
@@ -150,6 +151,10 @@ function App() {
   return (
     <>
       <div className="card">
+      <label class="switch">
+         <input type="checkbox"/>
+         <span class="slider round"></span>
+      </label>
         <p className="title">Upload file</p>
         <div className="textareaContainer">
           <img className="image" src={previewImage} />
