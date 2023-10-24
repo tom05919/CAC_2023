@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react';
 import axios from "axios";
-import './App.scss'
+import './App.scss';
 
 function App() {
   const [previewImage, setPreviewImage] = useState("");
@@ -10,8 +10,8 @@ function App() {
   const [fakeOne, setFakeOne] = useState();
   const [fakeTwo, setFakeTwo] = useState(0);
   const [textareaValue, setTextareaValue] = useState();
-  const [resultText, setResultText] = useState("");
   const [AISentence, setAISentence] = useState([]);
+ 
 
   //detects change in text, and thus updating textareaValue
   useEffect(() => {
@@ -34,6 +34,13 @@ function App() {
   function onTextChange (event) {
     setTextareaValue(event.target.value);
     //console.log(event.target.value);
+  }
+
+  function changeTheme() {
+    const root = document.documentElement;
+    root.style.setProperty('color-scheme', 'light');
+    // var element = document.body;
+    // element.classList.toggle("light");
   }
 
   function makeNewText() {
@@ -144,12 +151,8 @@ function App() {
   }, [AISentence]);
 
   return (
-    <>
+    <div className="root">
       <div className="card">
-      <label className="switch">
-         <input type="checkbox"/>
-         <span className="slider round"></span>
-      </label>
         <p className="title">Upload file</p>
         <div className="textareaContainer">
           <img className="image" src={previewImage} />
@@ -171,10 +174,11 @@ function App() {
          }}>
           check for AI
         </button>
-        <p className="text">fake: {fakeTwo}%</p>
-        <p className="text" id="result"></p>
+        <p className="text">AI generated: {fakeTwo}%</p>
+        <p className="result" id="result"></p>
+        <p className="info">*texts that are in red are the AI generated sentence(s)*</p>
       </div>
-    </>
+    </div>
   )
 }
 
